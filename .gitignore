@@ -1,3 +1,4 @@
+.idea/
 ssh-config.yaml
 k8sconfig
 !.gitignore
