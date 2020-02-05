@@ -131,6 +131,7 @@ func GetOOMPod(uidPodMap map[string]map[string]string, oomPodChan chan map[strin
 func GetSSHConfig(cluster string, authChan chan ConnectInfo) {
 	viper.SetConfigName("ssh-config") // without suffix
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("./config")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
@@ -158,6 +159,7 @@ func GetSSHConfig(cluster string, authChan chan ConnectInfo) {
 func GetAuthLen(cluster string) int {
 	viper.SetConfigName("ssh-config") // without suffix
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("./config")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))

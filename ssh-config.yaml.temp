@@ -1,14 +1,12 @@
-cluster01:
-  auth:
-  - 192.168.21.224 22 root Your_Password 
-  - 192.168.21.225 22 root Your_Password
-  - 192.168.21.226 22 root Your_Password
-  - 192.168.21.227 22 root Your_Password
-  - 192.168.21.228 22 root Your_Password
-  - 192.168.21.229 22 root Your_Password
-  - 192.168.21.197 22 root Your_Password 
-  - 192.168.21.199 22 root Your_Password
-cluster02:
-  auth:
-  - 192.168.1.100 22 root Your_Password
-  - 192.168.1.101 22 root Your_Password
+# example ssh config below
+#compass-stack:
+#  auth:
+#  - 192.168.21.224 22 root Your#Password
+#  - 192.168.21.225 22 root Your#Password
+#  - 192.168.21.226 22 root Your#Password
+#  - 192.168.21.227 22 root Your#Password
+
+#uat:
+#  auth:
+#  - 192.168.21.224 22 root Your#Password
+#  - 192.168.21.225 22 root Your#Password
