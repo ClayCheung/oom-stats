@@ -8,4 +8,4 @@ push: image
 	docker push clayz95/oom-stats:latest
 
 image-tar: image
-	docker save -o oom-stats.tar clayz95/oom-stats
+	docker save -o oom-stats-image.tar clayz95/oom-stats

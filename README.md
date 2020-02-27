@@ -25,7 +25,7 @@ cluster02:
 
 ```
 
-3. Run cmd with your parameters
+2. Run cmd with your parameters
 > k8sconfig: kubeconfig file path
 > cluster: cluster in ssh-config.yaml
 ```
