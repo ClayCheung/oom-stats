@@ -25,9 +25,6 @@ cluster02:
 
 ```
 
-2. Put the `oom-stats.sh` files in the same directory of executable file `oom-stats`
-> `oom-stats.sh` files is order to get oom pod UID and times
-
 3. Run cmd with your parameters
 > k8sconfig: kubeconfig file path
 > cluster: cluster in ssh-config.yaml

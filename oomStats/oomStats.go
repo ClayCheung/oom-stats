@@ -4,23 +4,31 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"io/ioutil"
 	"oom-stats/sftp"
 	"oom-stats/ssh"
+	"os"
+	"path"
 	"strconv"
 	"strings"
 	"sync"
 )
 
 const (
-	srcFilePath = "./oom-stats.sh"
 	dstDirPath  = "/tmp"
+	shScript = `
+#!/bin/bash
+res=$(dmesg -LT|grep "killed as a result of limit"|awk -F ' ' '{print $8}'|awk -F '/' '{print $(NF-1)}'|cut -c 4- | awk '{a[$0]++}END{for(i in a){print i,a[i]}}')
+echo -e "${res}\n"
+`
 )
 
 var (
+	shFileName = "oom-stats.sh"
 	cmdList = []string{
-		"chmod 777 /tmp/oom-stats.sh",
-		"/tmp/oom-stats.sh",
-		"rm -f /tmp/oom-stats.sh",
+		"chmod 777 /tmp/"+shFileName,
+		"/tmp/"+shFileName,
+		"rm -f /tmp/"+shFileName,
 	}
 	Wg sync.WaitGroup
 )
@@ -41,16 +49,37 @@ func NewConnectInfo(user, host string, port int, password string) ConnectInfo {
 	}
 }
 
+func genTmpBashScript() (*string, error) {
+	tDir, err := ioutil.TempDir("", "oom-stats")
+	if err != nil {
+		return nil, err
+	}
+	tFile := path.Join(tDir, shFileName)
+	if err = ioutil.WriteFile(tFile, []byte(shScript), 0777); err != nil {
+		return nil, err
+	}
+
+	return &tFile, nil
+}
+
 func GetOOMPodUid(c ConnectInfo, oomPodChan chan<- map[string][]map[string]string) {
 	defer Wg.Done()
+	// generate bash script file tmp
+	shFile, err := genTmpBashScript()
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	defer func() {
+		os.Remove(*shFile)
+	}()
 	// sftp put bash
 	sftpClient, err := sftp.Connect(c.user, c.password, c.host, c.port)
 	if err != nil {
 		logrus.Fatal(err)
 	}
 	defer sftpClient.Close()
-
-	if err := sftp.Put(sftpClient, srcFilePath, dstDirPath); err != nil {
+	fmt.Println(*shFile)
+	if err := sftp.Put(sftpClient, *shFile, dstDirPath); err != nil {
 		logrus.Fatal(err)
 	}
 	// ssh run bash script
@@ -71,10 +100,6 @@ func GetOOMPodUid(c ConnectInfo, oomPodChan chan<- map[string][]map[string]strin
 
 	// return oom pod's uid and oom times
 	logrus.Debugf("goroutine GetOOMPodUid: %v not done\n", c)
-
-	//if len(oomPod) != 0 {
-	//	oomPodChan <- oomPod
-	//}
 
 	oomPodChan <- get_UID_OOMTimes(returnList[1], c.host)
 

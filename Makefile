@@ -1,5 +1,5 @@
 build:
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o oom-stats -a ./cmd/entry.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o oom-stats -a ./cmd/entry.go
 
 image: build
 	docker build -t clayz95/oom-stats .

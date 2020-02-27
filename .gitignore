@@ -4,3 +4,6 @@ k8sconfig
 k8sconfig.*
 !.gitignore
 *.debug
+*.puml
+*.tar
+oom-stats
